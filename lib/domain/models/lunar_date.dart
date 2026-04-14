@@ -11,5 +11,8 @@ class LunarDate {
   final int year;
   final bool isLeapMonth;
 
-  String get displayText => '${day.toString().padLeft(2, '0')}/${month.toString().padLeft(2, '0')} âm lịch';
+  String get displayText {
+    final leapSuffix = isLeapMonth ? ' nhuận' : '';
+    return '${day.toString().padLeft(2, '0')}/${month.toString().padLeft(2, '0')}$leapSuffix âm lịch';
+  }
 }

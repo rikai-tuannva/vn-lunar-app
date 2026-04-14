@@ -19,6 +19,7 @@ class HomeScreen extends ConsumerStatefulWidget {
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   late final PageController _pageController;
   static const int _initialPage = 1200;
+  final DateTime _anchorMonth = firstDayOfMonth(DateTime.now());
 
   @override
   void initState() {
@@ -38,6 +39,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final controller = ref.read(calendarControllerProvider.notifier);
     final lunarService = ref.watch(lunarCalendarServiceProvider);
     final selectedLunarDate = lunarService.convertSolarToLunar(state.selectedDate);
+    final desiredPage = _pageForMonth(state.displayedMonth);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!_pageController.hasClients) {
+        return;
+      }
+
+      final currentPage =
+          _pageController.page?.round() ?? _pageController.initialPage;
+      if (currentPage != desiredPage) {
+        _pageController.animateToPage(
+          desiredPage,
+          duration: const Duration(milliseconds: 220),
+          curve: Curves.easeOut,
+        );
+      }
+    });
 
     return Scaffold(
       body: SafeArea(
@@ -48,11 +66,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               child: CalendarHeader(
                 selectedDate: state.selectedDate,
                 lunarDate: selectedLunarDate,
-                onTapToday: () {
-                  controller.goToToday();
-                  _pageController.jumpToPage(_initialPage);
-                },
-                onTapSettings: () => _showStartOfWeekSheet(context, state.startOfWeek),
+                onTapToday: controller.goToToday,
+                onTapSettings: () =>
+                    _showStartOfWeekSheet(context, state.startOfWeek),
               ),
             ),
             Expanded(
@@ -87,16 +103,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           /// selectedDate intentionally remains untouched here.
                           final delta = pageIndex - _initialPage;
                           controller.changeDisplayedMonth(
-                            addMonth(DateTime.now(), delta),
+                            addMonth(_anchorMonth, delta),
                           );
                         },
                         itemBuilder: (context, index) {
                           final delta = index - _initialPage;
-                          final pageMonth = addMonth(DateTime.now(), delta);
+                          final pageMonth = addMonth(_anchorMonth, delta);
                           final days = controller.buildMonthGrid(month: pageMonth);
                           return MonthGrid(
                             days: days,
-                            onTapDay: (day) => controller.selectDate(day.solarDate),
+                            onTapDay: (day) =>
+                                controller.selectDate(day.solarDate),
                           );
                         },
                       ),
@@ -148,5 +165,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         );
       },
     );
+  }
+
+  int _pageForMonth(DateTime month) {
+    return _initialPage +
+        ((month.year - _anchorMonth.year) * 12) +
+        (month.month - _anchorMonth.month);
   }
 }
