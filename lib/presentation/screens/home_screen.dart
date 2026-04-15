@@ -90,7 +90,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    MonthLabel(month: state.displayedMonth),
+                    MonthLabel(
+                      month: state.displayedMonth,
+                      onTapPrevious: () => controller.changeDisplayedMonth(
+                        addMonth(state.displayedMonth, -1),
+                      ),
+                      onTapNext: () => controller.changeDisplayedMonth(
+                        addMonth(state.displayedMonth, 1),
+                      ),
+                      onTapLabel: () => _showMonthYearPicker(
+                        context,
+                        currentMonth: state.displayedMonth,
+                        onSelected: controller.changeDisplayedMonth,
+                      ),
+                    ),
                     const SizedBox(height: 8),
                     WeekdayRow(startOfWeek: state.startOfWeek),
                     const SizedBox(height: 8),
@@ -171,5 +184,78 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return _initialPage +
         ((month.year - _anchorMonth.year) * 12) +
         (month.month - _anchorMonth.month);
+  }
+
+  Future<void> _showMonthYearPicker(
+    BuildContext context, {
+    required DateTime currentMonth,
+    required ValueChanged<DateTime> onSelected,
+  }) async {
+    var selectedYear = currentMonth.year;
+    var selectedMonth = currentMonth.month;
+
+    final picked = await showDialog<DateTime>(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: const Text('Chọn tháng / năm'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  DropdownButtonFormField<int>(
+                    initialValue: selectedYear,
+                    decoration: const InputDecoration(labelText: 'Năm'),
+                    items: [
+                      for (var year = 1990; year <= 2100; year++)
+                        DropdownMenuItem(value: year, child: Text('$year')),
+                    ],
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() => selectedYear = value);
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  DropdownButtonFormField<int>(
+                    initialValue: selectedMonth,
+                    decoration: const InputDecoration(labelText: 'Tháng'),
+                    items: [
+                      for (var month = 1; month <= 12; month++)
+                        DropdownMenuItem(
+                          value: month,
+                          child: Text('Tháng ${month.toString().padLeft(2, '0')}'),
+                        ),
+                    ],
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() => selectedMonth = value);
+                      }
+                    },
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('Huỷ'),
+                ),
+                FilledButton(
+                  onPressed: () {
+                    Navigator.pop(context, DateTime(selectedYear, selectedMonth, 1));
+                  },
+                  child: const Text('Chọn'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+
+    if (picked != null) {
+      onSelected(firstDayOfMonth(picked));
+    }
   }
 }

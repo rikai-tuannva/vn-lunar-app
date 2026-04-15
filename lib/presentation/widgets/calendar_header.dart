@@ -31,45 +31,60 @@ class CalendarHeader extends StatelessWidget {
           colors: [Color(0xFFFFFBF5), Color(0xFFFAF7F2)],
         ),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Stack(
         children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFFDEBD2),
-                  borderRadius: BorderRadius.circular(999),
-                ),
-                child: Text(
-                  'Hôm nay',
-                  style: theme.textTheme.labelMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
-                    color: const Color(0xFF92400E),
-                  ),
+          Align(
+            alignment: Alignment.topLeft,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                color: const Color(0xFFFDEBD2),
+                borderRadius: BorderRadius.circular(999),
+              ),
+              child: Text(
+                'Hôm nay',
+                style: theme.textTheme.labelMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: const Color(0xFF92400E),
                 ),
               ),
-              const Spacer(),
-              TextButton(onPressed: onTapToday, child: const Text('ToDay')),
-              IconButton(
-                onPressed: onTapSettings,
-                icon: const Icon(Icons.settings_outlined),
-              ),
-            ],
-          ),
-          const Spacer(),
-          Text(
-            lunarDate.displayText,
-            style: theme.textTheme.headlineLarge?.copyWith(
-              fontWeight: FontWeight.w700,
-              color: const Color(0xFF7C2D12),
             ),
           ),
-          const SizedBox(height: 8),
-          Text(
-            formatSolarDateVi(selectedDate),
-            style: theme.textTheme.titleMedium?.copyWith(color: Colors.black54),
+          Align(
+            alignment: Alignment.topRight,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextButton(onPressed: onTapToday, child: const Text('ToDay')),
+                IconButton(
+                  onPressed: onTapSettings,
+                  icon: const Icon(Icons.settings_outlined),
+                ),
+              ],
+            ),
+          ),
+          Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  lunarDate.displayText,
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.headlineLarge?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: const Color(0xFF7C2D12),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  formatSolarDateVi(selectedDate),
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    color: Colors.black54,
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
