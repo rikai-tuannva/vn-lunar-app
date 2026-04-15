@@ -24,11 +24,32 @@ class CalendarHeader extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Color(0xFFFFFBF5), Color(0xFFFAF7F2)],
+        ),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFDEBD2),
+                  borderRadius: BorderRadius.circular(999),
+                ),
+                child: Text(
+                  'Hôm nay',
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: const Color(0xFF92400E),
+                  ),
+                ),
+              ),
               const Spacer(),
               TextButton(onPressed: onTapToday, child: const Text('ToDay')),
               IconButton(

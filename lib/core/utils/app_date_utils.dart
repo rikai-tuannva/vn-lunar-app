@@ -33,3 +33,5 @@ List<String> weekdayLabels(StartOfWeek startOfWeek) {
       ? const ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN']
       : const ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
 }
+
+String formatShortLunarDay(int day) => day.toString().padLeft(2, '0');

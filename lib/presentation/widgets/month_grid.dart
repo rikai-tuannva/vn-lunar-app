@@ -16,7 +16,7 @@ class MonthGrid extends StatelessWidget {
       itemCount: days.length,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 7,
-        childAspectRatio: 1,
+        childAspectRatio: 0.92,
       ),
       itemBuilder: (context, index) {
         final day = days[index];
