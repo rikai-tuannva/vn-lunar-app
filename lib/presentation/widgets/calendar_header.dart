@@ -20,6 +20,7 @@ class CalendarHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isToday = isSameDate(selectedDate, normalizeDate(DateTime.now()));
 
     return Container(
       width: double.infinity,
@@ -33,23 +34,24 @@ class CalendarHeader extends StatelessWidget {
       ),
       child: Stack(
         children: [
-          Align(
-            alignment: Alignment.topLeft,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              decoration: BoxDecoration(
-                color: const Color(0xFFFDEBD2),
-                borderRadius: BorderRadius.circular(999),
-              ),
-              child: Text(
-                'Hôm nay',
-                style: theme.textTheme.labelMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: const Color(0xFF92400E),
+          if (isToday)
+            Align(
+              alignment: Alignment.topLeft,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFDEBD2),
+                  borderRadius: BorderRadius.circular(999),
+                ),
+                child: Text(
+                  'Hôm nay',
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: const Color(0xFF92400E),
+                  ),
                 ),
               ),
             ),
-          ),
           Align(
             alignment: Alignment.topRight,
             child: Row(
